@@ -16,9 +16,9 @@ This project develops an automated email spam detection system that uses machine
 sp26-cs410-group15-email-spam-detector/
 ├── data/             # Raw and cleaned dataset files
 ├── notebooks/        # Jupyter notebooks for EDA and modeling
-├── src/              # Python source code and helper scripts
-├── results/          # Confusion matrices, metrics, and visualizations
 ├── reports/          # Project proposal and milestone report PDFs
+├── results/          # Confusion matrices, metrics, and visualizations
+├── src/              # Python source code and helper scripts
 └── README.md         # Project documentation
 ```
 
