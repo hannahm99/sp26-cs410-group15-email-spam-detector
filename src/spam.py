@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import re
  
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -14,42 +15,16 @@ from sklearn.metrics import (
 )
 
 # Placeholder random data to text code
-import random
-random.seed(42)
-spam_samples = [
-    "Congratulations! You've won a $1000 gift card. Click here to claim now!",
-    "FREE entry in our weekly competition to win FA Cup final tickets!",
-    "URGENT: Your account has been compromised. Verify immediately.",
-    "You have been selected for a cash prize. Reply YES to claim.",
-    "Get cheap medications online. No prescription needed!",
-    "Win a holiday for two! Text WIN to 80082 now.",
-    "Call now to claim your prize before it expires!",
-    "Earn money from home. No experience needed. Apply today.",
-    "Your loan application approved. Click link to receive funds.",
-    "ALERT: Suspicious login detected. Click to secure account.",
-]
-ham_samples = [
-    "Hey, are you coming to the study session tonight?",
-    "Can you pick up some groceries on your way home?",
-    "The lecture slides have been posted on Canvas.",
-    "Don't forget the assignment is due Friday.",
-    "Let me know when you're free to meet this week.",
-    "Happy birthday! Hope you have a great day.",
-    "I'll be a few minutes late to the meeting.",
-    "Did you see the game last night? Incredible finish.",
-    "The library is closed on Sunday this week.",
-    "Can you send me the notes from Tuesday's class?",
-]
-random.shuffle(spam_samples)
-random.shuffle(ham_samples)
-data = (
-    [{"label": "spam", "text": s} for s in spam_samples * 25]
-    + [{"label": "ham", "text": h} for h in ham_samples * 50]
-)
-df = pd.DataFrame(data).sample(frac=1, random_state=42).reset_index(drop=True)
+df = pd.read_csv("./data/SMSSpamCollection", sep="\t", header=None, names=["label", "text"])
 
-# extremely basic preprocessing (replace with more if needed)
-df["cleaned"] = df["text"].str.lower().str.strip()
+
+def preprocess(text):
+    text = text.lower()                          
+    text = re.sub(r"[^a-z\s]", "", text)         
+    text = re.sub(r"\s+", " ", text).strip()    
+    return text
+
+df["clean_text"] = df["text"].apply(preprocess)
 
 # TF-IDF Vectorization
 vectorizer = TfidfVectorizer(
@@ -59,7 +34,7 @@ vectorizer = TfidfVectorizer(
     sublinear_tf=True       
 )
  
-X = vectorizer.fit_transform(df["cleaned"])
+X = vectorizer.fit_transform(df["clean_text"])
 y = (df["label"] == "spam").astype(int) 
  
  
